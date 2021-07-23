@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <URL>"
+fi
+
+tech() {
+    if ! command -v webtech 1>/dev/null 2>&1 ; then
+        echo "webtech is not installed"
+        return 1
+    fi
+    wt=$(command -v webtech)
+
+    if [ ! -d "webtech" ]; then
+        mkdir webtech
+    fi
+    echo "Getting web stack with webtech on: $1"
+    $wt -u "$1" > ./webtech/results.txt
+}
+
+what() {
+    if ! command -v whatweb 1>/dev/null 2>&1 ; then
+        echo "whatweb is not installed"
+        return 1
+    fi
+    w=$(command -v whatweb)
+
+    if [ ! -d "whatweb" ]; then
+        mkdir whatweb
+    fi
+    echo "Getting web stack with whatweb on: $1"
+    $w -a 3 "$1" | sed s/,/\\n/g > ./whatweb/results.txt
+}
+
+tech "$1"
+what "$1"
+
